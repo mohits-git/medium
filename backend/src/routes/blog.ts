@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
+import { PostBlogInput, UpdateBlogInput } from "@mohits-npm/medium-zod-validation";
 
 const blogRouter = new Hono<{
     Bindings: {
@@ -55,6 +56,13 @@ blogRouter.post('/', async (c) => {
         const body = await c.req.json();
         const prisma = c.get('prisma');
 
+        const { success } = PostBlogInput.safeParse(body);
+
+        if (!success) {
+            c.status(401);
+            return c.json({ error: "Invalid credentials" });
+        }
+
         const blog = await prisma.post.create({
             data: {
                 title: body.title,
@@ -76,6 +84,13 @@ blogRouter.put('/', async (c) => {
     try {
         const body = await c.req.json();
         const prisma = c.get('prisma');
+
+        const { success } = UpdateBlogInput.safeParse(body);
+
+        if (!success) {
+            c.status(401);
+            return c.json({ error: "Invalid credentials" });
+        }
 
         const blog = await prisma.post.update({
             where: {

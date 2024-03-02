@@ -7,15 +7,29 @@ const userRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string,
         JWT_SECRET: string
+    },
+    Variables: {
+        prisma: any
     }
 }>();
 
 
-userRouter.post('/signup', async (c) => {
+userRouter.use('*', async (c, next) => {
     try {
         const prisma = new PrismaClient({
-            datasourceUrl: c.env?.DATABASE_URL,
+            datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate());
+        c.set("prisma", prisma);
+        await next();
+    } catch (error: any) {
+        c.status(403);
+        return c.json({ error: "Error while creating prisma client" });
+    }
+})
+
+userRouter.post('/signup', async (c) => {
+    try {
+        const prisma = c.get('prisma');
 
         const body = await c.req.json();
 
@@ -46,6 +60,7 @@ userRouter.post('/signup', async (c) => {
             message: "Successfully Signed Up",
             token
         });
+
     } catch (error: any) {
         c.status(403);
         return c.json({ error: "Error while signing up" });
@@ -54,9 +69,7 @@ userRouter.post('/signup', async (c) => {
 
 userRouter.post('/signin', async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL
-        }).$extends(withAccelerate());
+        const prisma = c.get('prisma');
 
         const body = await c.req.json();
 

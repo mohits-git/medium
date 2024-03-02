@@ -9,10 +9,23 @@ const blogRouter = new Hono<{
         JWT_SECRET: string,
     },
     Variables: {
-        user_id: string
+        user_id: string,
+        prisma: any
     }
 }>();
 
+blogRouter.use('*', async (c, next) => {
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+        c.set("prisma", prisma);
+        await next();
+    } catch (error: any) {
+        c.status(403);
+        return c.json({ error: "Error while signing up" });
+    }
+})
 
 blogRouter.use('*', async (c, next) => {
     try {
@@ -40,9 +53,7 @@ blogRouter.use('*', async (c, next) => {
 blogRouter.post('/', async (c) => {
     try {
         const body = await c.req.json();
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env?.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = c.get('prisma');
 
         const blog = await prisma.post.create({
             data: {
@@ -64,9 +75,7 @@ blogRouter.post('/', async (c) => {
 blogRouter.put('/', async (c) => {
     try {
         const body = await c.req.json();
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env?.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = c.get('prisma');
 
         const blog = await prisma.post.update({
             where: {
@@ -95,9 +104,7 @@ blogRouter.put('/', async (c) => {
 
 blogRouter.get('/bulk', async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env?.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = c.get('prisma');
 
         const blog = await prisma.post.findMany();
 
@@ -118,9 +125,7 @@ blogRouter.get('/bulk', async (c) => {
 blogRouter.get('/:id', async (c) => {
     try {
         const blogId = c.req.param('id');
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env?.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = c.get('prisma');
 
         const blog = await prisma.post.findUnique({
             where: {

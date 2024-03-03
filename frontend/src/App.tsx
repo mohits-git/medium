@@ -3,15 +3,18 @@ import SignUp from './pages/Signup.tsx'
 import SignIn from './pages/Signin.tsx'
 import Blog from './pages/Blog.tsx'
 import Blogs from './pages/Blogs.tsx'
+import Layout from './Layout.tsx'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={'/signup'} element={<SignUp />} />
-        <Route path={'/signin'} element={<SignIn />} />
-        <Route path={'/blogs'} element={<Blogs />} />
-        <Route path={'/blog/:id'} element={<Blog />} />
+        <Route element={<Layout />}>
+          <Route path={'/signup'} element={<SignUp />} />
+          <Route path={'/signin'} element={<SignIn />} />
+          <Route path={'/blogs'} element={<Blogs />} />
+          <Route path={'/blog/:id'} element={<Blog />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

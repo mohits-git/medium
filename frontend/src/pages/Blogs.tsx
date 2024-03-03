@@ -3,7 +3,6 @@ import BlogCard from "../components/BlogCard";
 export default function Blogs() {
   return (
     <div className="min-h-screen bg-gray-50">
-      Here you can see all the blogs availble
       <div className="max-w-2xl mx-auto ">
         <BlogCard
           author="Mohit"

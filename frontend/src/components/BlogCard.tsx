@@ -1,4 +1,7 @@
 // TODO : add tags ex: lifestyle, technical, science, gaming, etc. first in backend and then frontend
+
+import Avatar from "./Avatar"
+
 // TODO : Change Avatar to a author's photo, first change the backend logic
 export default function BlogCard({ author, title, content, publishDate, tags = ['Lifestyle', 'Web'] }: {
   author: string,
@@ -38,15 +41,6 @@ export default function BlogCard({ author, title, content, publishDate, tags = [
         <span className="text-slate-500">{Math.floor(content.length / 100)} min read</span>
       </div>
 
-    </div>
-  )
-}
-
-
-function Avatar({ name }: { name: string }) {
-  return (
-    <div className="relative inline-flex items-center justify-center w-7 h-7 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-      <span className="font-medium text-sm text-gray-600 dark:text-gray-300">{name[0]}</span>
     </div>
   )
 }

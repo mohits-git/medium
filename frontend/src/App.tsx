@@ -4,6 +4,7 @@ import SignIn from './pages/Signin.tsx'
 import Blog from './pages/Blog.tsx'
 import Blogs from './pages/Blogs.tsx'
 import Layout from './Layout.tsx'
+import NewBlog from './pages/NewBlog.tsx'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path={'/signin'} element={<SignIn />} />
           <Route path={'/blogs'} element={<Blogs />} />
           <Route path={'/blog/:id'} element={<Blog />} />
+          <Route path={'/publish'} element={<NewBlog />} />
         </Route>
       </Routes>
     </BrowserRouter>

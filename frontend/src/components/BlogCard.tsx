@@ -1,8 +1,9 @@
 // TODO : add tags ex: lifestyle, technical, science, gaming, etc. first in backend and then frontend
+// TODO : change backend to store publishedDate too
+// TODO : Change Avatar to a author's photo, first change the backend logic
 
 import Avatar from "./Avatar"
 
-// TODO : Change Avatar to a author's photo, first change the backend logic
 export default function BlogCard({ author, title, content, publishDate, tags = ['Lifestyle', 'Web'] }: {
   author: string,
   title: string,
@@ -14,7 +15,7 @@ export default function BlogCard({ author, title, content, publishDate, tags = [
     <div className="flex flex-col justify-center space-y-2 py-12 border-b border-b-slate-200">
 
       <div className="flex items-center space-x-1">
-        <Avatar name="Mohit" />
+        <Avatar name={author} />
         <span className="pl-1">{author}</span>
         <span className="text-slate-500">|</span>
         <span className="text-slate-500">{publishDate}</span>

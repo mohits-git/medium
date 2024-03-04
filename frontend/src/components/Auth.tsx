@@ -2,6 +2,7 @@ import { SignUpSchema } from "@mohits-npm/medium-zod-validation";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
 
 export default function Auth({ type }: { type: "signup" | "signin" }) {
   const [postInputs, setpostInputs] = useState<SignUpSchema>({
@@ -12,10 +13,9 @@ export default function Auth({ type }: { type: "signup" | "signin" }) {
 
   const navigate = useNavigate();
 
-  const url = import.meta.env.VITE_BACKEND_URL;
   const sendRequest = async () => {
     try {
-      const response = await axios.post(`${url}/api/v1/user/${type}`, {
+      const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type}`, {
         name: postInputs.name,
         email: postInputs.email,
         password: postInputs.password

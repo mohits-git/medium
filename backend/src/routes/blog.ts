@@ -23,8 +23,8 @@ blogRouter.use('*', async (c, next) => {
         c.set("prisma", prisma);
         await next();
     } catch (error: any) {
-        c.status(403);
-        return c.json({ error: "Error while signing up" });
+        c.status(503);
+        return c.json({ error: "Internal server error" });
     }
 })
 
@@ -33,7 +33,7 @@ blogRouter.use('*', async (c, next) => {
         const header = c.req.header("authorization") || "";
         const token = header.split(' ')[1];
         if (!token) {
-            c.status(403);
+            c.status(401);
             return c.json({ error: "Token is required" });
         }
         const responsePayload = await verify(token, c.env.JWT_SECRET);
@@ -42,11 +42,11 @@ blogRouter.use('*', async (c, next) => {
             await next();
         }
         else {
-            c.status(403);
+            c.status(401);
             return c.json({ error: "unauthorized" });
         }
     } catch (error: any) {
-        c.status(401)
+        c.status(403)
         return c.json({ error: error.message });
     }
 })
@@ -102,7 +102,7 @@ blogRouter.put('/', async (c) => {
                 content: body.content,
             }
         });
-    
+
         if (!blog) {
             c.status(404)
             return c.json({ error: "Error: Blog not found" });
@@ -121,7 +121,18 @@ blogRouter.get('/bulk', async (c) => {
     try {
         const prisma = c.get('prisma');
 
-        const blog = await prisma.post.findMany();
+        const blog = await prisma.post.findMany({
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                author: {
+                    select: {
+                        name: true,
+                    }
+                }
+            }
+        });
 
         if (!blog) {
             c.status(404)
@@ -145,7 +156,16 @@ blogRouter.get('/:id', async (c) => {
         const blog = await prisma.post.findUnique({
             where: {
                 id: blogId,
-                author_id: c.get('user_id')
+            },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                author: {
+                    select: {
+                        name: true,
+                    }
+                }
             }
         });
 
